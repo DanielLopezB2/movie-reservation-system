@@ -2,19 +2,42 @@ import { BadRequestException, HttpStatus, Injectable, InternalServerErrorExcepti
 import { CreateMovieDto } from './dto/create-movie.dto';
 import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Movie, PrismaClient } from '@prisma/client';
+import * as path from 'path';
+import * as fs from 'fs';
 
 @Injectable()
 export class MoviesService extends PrismaClient {
 
-  async create(createMovieDto: CreateMovieDto) {
+  async create(createMovieDto: CreateMovieDto, file: Express.Multer.File) {
 
     try {
+
+      if (!file) throw new BadRequestException({
+        message: `Couldn't create the movie.`,
+        status: HttpStatus.BAD_REQUEST,
+        error: 'Poster image is required'
+      });
+
+      if (!file.buffer) throw new BadRequestException({
+        message: `Couldn't create the movie.`,
+        status: HttpStatus.BAD_REQUEST,
+        error: 'Invalid file upload'
+      });
+
+      const uploadDir = path.join(__dirname, '..', '..', 'uploads');
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+
+      const filePath = path.join(uploadDir, file.originalname);
+      fs.writeFileSync(filePath, file.buffer);
+
       const { deletedAt, ...movie } = await this.movie.create({
         data: {
           id: createMovieDto.id ?? Number(await this.getLastId()),
           title: createMovieDto.title,
           overview: createMovieDto.overview,
-          posterImage: createMovieDto.posterImage,
+          posterImage: `/uploads/${file.originalname}`,
           duration: createMovieDto.duration,
           MovieGenre: {
             create: createMovieDto.genreIds.map((genreId) => ({
@@ -51,6 +74,7 @@ export class MoviesService extends PrismaClient {
           error: 'The Genre ID does not exist'
         });
       } else {
+        console.log(error);
         throw new InternalServerErrorException({
           message: 'An error occurred while creating the movie.',
           status: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -129,7 +153,6 @@ export class MoviesService extends PrismaClient {
           title: updateMovieDto.title,
           duration: updateMovieDto.duration,
           overview: updateMovieDto.overview,
-          posterImage: updateMovieDto.posterImage
         },
         where: {
           id

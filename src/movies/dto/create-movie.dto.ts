@@ -16,9 +16,6 @@ export class CreateMovieDto {
     @IsString()
     overview: string;
 
-    @IsString()
-    posterImage: string;
-
     @IsInt()
     @Type(() => Number)
     duration: number;
@@ -26,6 +23,7 @@ export class CreateMovieDto {
     @IsArray()
     @ArrayMinSize(1)
     @IsInt({ each: true })
+    @Type(() => Number)
     genreIds: number[];
 
 }
