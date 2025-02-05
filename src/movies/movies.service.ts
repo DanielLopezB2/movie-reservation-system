@@ -209,7 +209,7 @@ export class MoviesService extends PrismaClient {
     
   }
 
-  private async findById(id: number) {
+  async findById(id: number) {
 
     const movie = await this.movie.findFirst({
       where: {

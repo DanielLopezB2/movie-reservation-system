@@ -42,6 +42,7 @@ model Movie {
   updatedAt   DateTime     @updatedAt
   deletedAt   DateTime?
   MovieGenre  MovieGenre[]
+  Showtimes   Showtimes[]
 }
 
 model MovieGenre {
@@ -90,6 +91,7 @@ model Showtimes {
 
   Rooms        Rooms?         @relation(fields: [roomId], references: [id])
   Reservations Reservations[]
+  Movie        Movie?         @relation(fields: [movieId], references: [id])
 }
 
 model Reservations {

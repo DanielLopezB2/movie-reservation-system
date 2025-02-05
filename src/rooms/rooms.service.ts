@@ -126,7 +126,7 @@ export class RoomsService extends PrismaClient {
     }
   }
   
-  private async findById(id: number) {
+  async findById(id: number) {
 
     const room = await this.rooms.findFirst({
       where: {
