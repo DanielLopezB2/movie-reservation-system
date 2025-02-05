@@ -4,6 +4,7 @@ import { UpdateMovieDto } from './dto/update-movie.dto';
 import { Movie, PrismaClient } from '@prisma/client';
 import * as path from 'path';
 import * as fs from 'fs';
+import { dateFormatter } from 'src/utils/date-formatter';
 
 @Injectable()
 export class MoviesService extends PrismaClient {
@@ -229,6 +230,60 @@ export class MoviesService extends PrismaClient {
     return movie;
 
   }
+
+  async findMovieWithShowtimes(date: Date) {
+
+    const startDate = new Date(date);
+    startDate.setHours(0, 0, 0, 0);
+
+    const endDate = new Date(date);
+    endDate.setHours(23, 59, 59, 999);
+
+    const movies = await this.movie.findMany({
+      where: {
+        Showtimes: {
+          some: {
+            date: {
+              gte: startDate,
+              lte: endDate
+            }
+          }
+        },
+        deletedAt: null
+      },
+      include: {
+        Showtimes: {
+          select: {
+            date: true
+          }
+        }
+      }
+    });
+
+    
+    const cleanedMovies = movies.map((movie) => {
+      return {
+        id: Number(movie.id),
+        title: movie.title,
+        overview: movie.overview,
+        posterImage: movie.posterImage,
+        duration: movie.duration,
+        showtimes: movie.Showtimes
+          .filter((showtime) => {
+            const showtimeDate = new Date(showtime.date);
+            return showtimeDate >= startDate && showtimeDate <= endDate;
+          })
+          .map((showtime) => dateFormatter(showtime.date)),
+      }
+    });
+
+    return {
+      data: cleanedMovies,
+      message: 'Movies retrieved successfully',
+      status: HttpStatus.OK
+    }
+  }
+
 
   private async getLastId() {
 

@@ -25,6 +25,11 @@ export class MoviesController {
     }
   }
 
+  @Get('showtimes')
+  findMovieWithShowtimes(@Query('date') date: Date) {
+    return this.moviesService.findMovieWithShowtimes(date);
+  }
+
   @Patch(':id')
   update(@Param('id', ParseIntPipe) id: number, @Body() updateMovieDto: UpdateMovieDto) {
     return this.moviesService.update(id, updateMovieDto);
