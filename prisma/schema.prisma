@@ -24,7 +24,7 @@ model User {
 }
 
 model Genre {
-  id         BigInt       @id @default(autoincrement())
+  id         BigInt       @id
   name       String
   createdAt  DateTime     @default(now())
   updatedAt  DateTime     @updatedAt
@@ -33,7 +33,7 @@ model Genre {
 }
 
 model Movie {
-  id          BigInt       @id @default(autoincrement())
+  id          BigInt       @id
   title       String
   overview    String
   posterImage String
