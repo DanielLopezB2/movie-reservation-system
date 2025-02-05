@@ -74,7 +74,6 @@ export class MoviesService extends PrismaClient {
           error: 'The Genre ID does not exist'
         });
       } else {
-        console.log(error);
         throw new InternalServerErrorException({
           message: 'An error occurred while creating the movie.',
           status: HttpStatus.INTERNAL_SERVER_ERROR,
@@ -189,7 +188,8 @@ export class MoviesService extends PrismaClient {
           deletedAt: new Date()
         },
         where: {
-          id
+          id,
+          deletedAt: null
         }
       });
       

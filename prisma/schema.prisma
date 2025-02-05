@@ -52,3 +52,67 @@ model MovieGenre {
 
   @@id([movieId, genreId])
 }
+
+model Rooms {
+  id         Int       @id @default(autoincrement())
+  name       String
+  totalSeats Int
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  seats     Seats[]
+  showtimes Showtimes[]
+}
+
+model Seats {
+  id        Int       @id @default(autoincrement())
+  roomId    Int
+  row       String
+  number    Int
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  Rooms         Rooms?          @relation(fields: [roomId], references: [id])
+  ReservedSeats ReservedSeats[]
+}
+
+model Showtimes {
+  id               String    @id @default(uuid())
+  movieId          BigInt
+  date             DateTime
+  roomId           Int
+  availableTickets Int
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  deletedAt        DateTime?
+
+  Rooms        Rooms?         @relation(fields: [roomId], references: [id])
+  Reservations Reservations[]
+}
+
+model Reservations {
+  id         Int       @id @default(autoincrement())
+  showtimeId String
+  userId     String
+  price      Float
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  deletedAt  DateTime?
+
+  Showtimes     Showtimes?      @relation(fields: [showtimeId], references: [id])
+  ReservedSeats ReservedSeats[]
+}
+
+model ReservedSeats {
+  id            Int       @id @default(autoincrement())
+  seatId        Int
+  reservationId Int
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+
+  Seats        Seats?        @relation(fields: [seatId], references: [id])
+  Reservations Reservations? @relation(fields: [reservationId], references: [id])
+}
