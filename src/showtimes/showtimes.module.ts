@@ -7,6 +7,7 @@ import { MoviesModule } from 'src/movies/movies.module';
 @Module({
   controllers: [ShowtimesController],
   providers: [ShowtimesService],
-  imports: [RoomsModule, MoviesModule]
+  imports: [RoomsModule, MoviesModule],
+  exports: [ShowtimesService]
 })
 export class ShowtimesModule {}
