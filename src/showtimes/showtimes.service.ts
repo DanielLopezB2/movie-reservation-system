@@ -203,4 +203,30 @@ export class ShowtimesService extends PrismaClient {
     return true;
   }
 
+  async updateAvailableTicketsCount(id: string, ticketsCount: number) {
+
+    const showtime = await this.findById(id);
+
+    try {
+
+      const { deletedAt, ...updatedShowtime } = await this.showtimes.update({
+        data: {
+          availableTickets: showtime.availableTickets - ticketsCount
+        },
+        where: {
+          id
+        }
+      });
+
+      return updatedShowtime;
+      
+    } catch (error) {
+      throw new InternalServerErrorException({
+        message: `Showtime update error`,
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        error: `Couldn't update the showtime`
+      });
+    }
+  }
+
 }

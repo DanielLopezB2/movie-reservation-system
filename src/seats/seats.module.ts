@@ -6,6 +6,7 @@ import { ShowtimesModule } from 'src/showtimes/showtimes.module';
 @Module({
   controllers: [SeatsController],
   providers: [SeatsService],
-  imports: [ShowtimesModule]
+  imports: [ShowtimesModule],
+  exports: [SeatsService]
 })
 export class SeatsModule {}

@@ -4,9 +4,10 @@ import { MoviesModule } from './movies/movies.module';
 import { ShowtimesModule } from './showtimes/showtimes.module';
 import { RoomsModule } from './rooms/rooms.module';
 import { SeatsModule } from './seats/seats.module';
+import { ReservationsModule } from './reservations/reservations.module';
 
 @Module({
-  imports: [SeedModule, MoviesModule, ShowtimesModule, RoomsModule, SeatsModule],
+  imports: [SeedModule, MoviesModule, ShowtimesModule, RoomsModule, SeatsModule, ReservationsModule],
   controllers: [],
   providers: [],
 })
