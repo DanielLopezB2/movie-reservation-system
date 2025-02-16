@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, ParseUUIDPipe } from '@nestjs/common';
 import { ReservationsService } from './reservations.service';
 import { CreateReservationDto } from './dto/create-reservation.dto';
 
@@ -11,13 +11,13 @@ export class ReservationsController {
     return this.reservationsService.create(createReservationDto);
   }
 
-  @Get()
-  findAllByUser() {
-    return this.reservationsService.findAll();
+  @Get('user/:userId')
+  findAllByUser(@Param('userId', ParseUUIDPipe) id: string) {
+    return this.reservationsService.findAllByUser(id);
   }
 
-  @Get(':id')
-  findAll(@Param('id', ParseIntPipe) id: number) {
+  @Get()
+  findAll() {
     return this.reservationsService.findAll();
   }
 
